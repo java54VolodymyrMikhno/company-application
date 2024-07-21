@@ -70,7 +70,7 @@ public class CompanyApplItems {
 	}
 	static void getEmployee(InputOutput io) {
 		Employee emp = company.getEmployee(readEmplId(io));
-		io.writeLine(emp==null ? "Employee not found":formatEmployee(emp));
+		io.writeLine(emp==null ? "Employee not found":emp.getJSON());
 	}
 	static void removeEmployee(InputOutput io) {
 		Employee empRemove = company.removeEmployee(readEmplId(io));
@@ -87,29 +87,9 @@ public class CompanyApplItems {
 		Manager[] managers = company.getManagersWithMostFactor();
 		io.writeLine(managers.length == 0 ? "Company witout managers" : "");
 		for (Manager m : managers) {
-			io.writeLine(formatEmployee(m));
+			io.writeLine(m.getJSON());
 		}
 	}
-	private static String formatEmployee(Employee emp) {
-		List<String> details = new ArrayList<>();
-		details.add("Employee ID: " + emp.getId());
-		details.add("Basic Salary: " + emp.getBasicSalary());
-		details.add("Department: " + emp.getDepartment());
-
-		if (emp instanceof Manager manager) {
-            details.add("Factor: " + manager.factor);
-		} else if (emp instanceof SalesPerson salesPerson) {
-            details.add("Hours: " + salesPerson.getHours());
-			details.add("Wage: " + salesPerson.getWage());
-			details.add("Percents: " + salesPerson.percent);
-			details.add("Sales: " + salesPerson.sales);
-		} else if (emp instanceof WageEmployee wageEmployee) {
-            details.add("Hours: " + wageEmployee.getHours());
-			details.add("Wage per Hour: " + wageEmployee.getWage());
-		}
-
-		return String.join(", ", details);
-	}
-
+	
 
 }
