@@ -85,7 +85,7 @@ public class CompanyApplItems {
 	}
 	static void getManagersWithMostFactor(InputOutput io) {
 		Manager[] managers = company.getManagersWithMostFactor();
-		io.writeLine(managers.length == 0 ? "Company is empty" : "");
+		io.writeLine(managers.length == 0 ? "Company witout managers" : "");
 		for (Manager m : managers) {
 			io.writeLine(formatEmployee(m));
 		}
