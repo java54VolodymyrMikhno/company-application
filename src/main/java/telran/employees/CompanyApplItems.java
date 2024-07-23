@@ -1,10 +1,14 @@
 package telran.employees;
 
 import java.util.*;
+import java.util.function.BiFunction;
+
 import java.util.stream.Collectors;
 
 import telran.view.InputOutput;
 import telran.view.Item;
+import telran.view.Menu;
+
 import static telran.employees.CompanyConfigProperties.*;
 
 public class CompanyApplItems {
@@ -15,7 +19,7 @@ public static List<Item> getCompanyItems(Company company,
 	CompanyApplItems.company = company;
 	CompanyApplItems.departments = departments;
 	Item[] items = {
-		Item.of("add employee", CompanyApplItems::addEmployee)	,
+			new Menu("add employee",addEmployeeSubMenu().toArray(Item[]::new)),
 		Item.of("display employee data", CompanyApplItems::getEmployee),
 		Item.of("remove employee", CompanyApplItems::removeEmployee),
 		Item.of("display department budget", CompanyApplItems::getDepartmentBudget),
@@ -25,17 +29,19 @@ public static List<Item> getCompanyItems(Company company,
 	return new ArrayList<>(List.of(items));
 	
 }
-static void addEmployee(InputOutput io) {
-	Employee empl = readEmployee(io);
-	String type = io.readStringOptions("Enter employee type",
-			"Wrong Employee Type", new HashSet<String>
-	(List.of("WageEmployee", "Manager", "SalesPerson")));
-	Employee result = switch(type) {
-	case "WageEmployee" -> getWageEmployee(empl, io);
-	case "Manager" -> getManager(empl, io);
-	case "SalesPerson" -> getSalesPerson(empl, io);
-	default -> null;
-	};
+static List<Item> addEmployeeSubMenu() {
+    List<Item> items = new ArrayList<>();
+    items.add(Item.of("Add Wage Employee", io -> addEmployee(io, CompanyApplItems::getWageEmployee)));
+    items.add(Item.of("Add Manager", io -> addEmployee(io, CompanyApplItems::getManager)));
+    items.add(Item.of("Add Sales Person", io -> addEmployee(io, CompanyApplItems::getSalesPerson)));
+    items.add(Item.of("Main menu", io->{},true));
+   
+    return items;
+}
+
+static void addEmployee(InputOutput io,BiFunction<Employee, InputOutput, Employee> getEmployeeFunction) {
+	Employee emp = readEmployee(io);
+	Employee result = getEmployeeFunction.apply(emp, io);
 	company.addEmployee(result);
 	io.writeLine("Employee has been added");
 }
